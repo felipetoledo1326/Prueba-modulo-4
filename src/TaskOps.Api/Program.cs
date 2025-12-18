@@ -14,6 +14,13 @@ builder.Services.AddSingleton<ITareaRepository, InMemoryTareaRepository>();
 
 var app = builder.Build();
 
+// Bonus: Middleware X-Request-Id
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Request-Id", Guid.NewGuid().ToString());
+    await next(context);
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
