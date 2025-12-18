@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "TaskOps API", Version = "v1" });
+});
 
 builder.Services.AddSingleton<ITareaRepository, InMemoryTareaRepository>();
 
@@ -21,11 +24,9 @@ app.Use(async (context, next) =>
     await next(context);
 });
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger enabled for all environments for Demo purposes
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskOps API v1"));
 
 app.UseHttpsRedirection();
 
